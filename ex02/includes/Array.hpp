@@ -9,9 +9,14 @@ private:
     T* _data;
     unsigned int _size;
 public:
-    Array(){
-        _data = new T[];
-    }
+    class WrongSize : public std::exception{
+    public:
+        virtual const char* what() const throw(){
+            return "Size is out of bound";
+        }
+    };
+
+    Array() : _data(NULL), _size(0){};
     
     Array(unsigned int n) : _size(n){
         _data = new T[n];
@@ -32,9 +37,17 @@ public:
         return *this;
     }
 
-    ~Array() {};
+    T& operator[](unsigned int v){
+        if (v >= this->_size)
+            throw Array::WrongSize();
+        return (this->_data[v]);
+    }
 
-    size() const{
+    ~Array(){
+        delete[] _data;
+    };
+
+    unsigned int size() const{
         return (this->_size);
     }
 };
